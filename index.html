@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
@@ -50,6 +49,8 @@
   .width-btn span { background: #fff; border-radius: 2px; display: block; width: 18px; }
   #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
   #modal-overlay.show { display: flex; }
+  #ball-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
+  #ball-modal-overlay.show { display: flex; }
   #modal { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: 12px; padding: 20px; width: min(320px,88vw); }
   #modal h3 { font-size: 13px; margin-bottom: 10px; color: var(--ui-muted); text-transform: uppercase; letter-spacing: .05em; }
   #modal input { width: 100%; background: var(--ui-bg); border: 1px solid var(--ui-border); border-radius: 6px; color: var(--ui-text); font-size: 16px; padding: 10px; margin-bottom: 12px; outline: none; }
@@ -68,6 +69,7 @@
 <div id="topbar">
   <h1>Perssons taktiktavla</h1>
   <button class="tb-btn" id="btn-add-player">+ Spelare</button>
+  <button class="tb-btn" id="btn-add-ball">+ Boll</button>
   <button class="tb-btn danger" id="btn-clear">Rensa</button>
 </div>
 
@@ -84,9 +86,9 @@
   <div class="tab-panel active" id="tab-draw">
     <div class="tool-row">
       <span class="tool-label">Verktyg</span>
-      <button class="tool-btn active" data-tool="line">Linje</button>
+      <button class="tool-btn" data-tool="line">Linje</button>
       <button class="tool-btn" data-tool="dashed">Streckad</button>
-      <button class="tool-btn" data-tool="move">Flytta</button>
+      <button class="tool-btn active" data-tool="move">Flytta</button>
       <button class="tool-btn danger" data-tool="erase">Radera</button>
     </div>
     <div class="tool-row">
@@ -157,14 +159,25 @@
   </div>
 </div>
 
+<div id="ball-modal-overlay">
+  <div id="modal">
+    <h3>Lägg till boll</h3>
+    <div id="ball-color-row"></div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" id="ball-modal-cancel">Avbryt</button>
+      <button class="modal-btn confirm" id="ball-modal-confirm">Lägg till</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const canvas = document.getElementById('pitch-canvas');
 const ctx    = canvas.getContext('2d');
 
 // ── State ──
 let pitchColor = '#1a4fa0', lineColor = '#f5d20e';
-let drawColor  = '#ffffff', drawWidth = 2, tool = 'line';
-let players = [], drawnLines = [], drag = null, drawPath = null;
+let drawColor  = '#ffffff', drawWidth = 2, tool = 'move';
+let players = [], balls = [], drawnLines = [], drag = null, drawPath = null;
 let W, H, S; // canvas px: width, height, scale
 
 // ── Real dimensions (metres) ──
@@ -296,7 +309,8 @@ function renderLines() {
 
 const PCOLS = ['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#a855f7','#ec4899','#14b8a6','#f43f5e','#94a3b8'];
 let chosenColor = PCOLS[0];
-const PR = 17; // player radius px
+const PR = 13; // player radius px (smaller)
+const BR = 7;  // ball radius px (~half of player)
 
 function renderPlayers() {
   players.forEach(p => {
@@ -304,7 +318,7 @@ function renderPlayers() {
     ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 7; ctx.shadowOffsetY = 2;
     ctx.beginPath(); ctx.arc(p.x, p.y, PR, 0, Math.PI*2);
     ctx.fillStyle = p.color; ctx.fill();
-    ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.stroke();
+    ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.stroke();
     ctx.restore();
 
     ctx.save();
@@ -326,7 +340,20 @@ function renderPlayers() {
   });
 }
 
-function render() { ctx.clearRect(0,0,W,H); drawPitch(); renderLines(); renderPlayers(); }
+function renderBalls() {
+  balls.forEach(b => {
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 2;
+    ctx.beginPath(); ctx.arc(b.x, b.y, BR, 0, Math.PI*2);
+    ctx.fillStyle = b.color; ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = b.color === '#ffffff' ? 'rgba(0,0,0,.3)' : 'rgba(255,255,255,.4)';
+    ctx.stroke();
+    ctx.restore();
+  });
+}
+
+function render() { ctx.clearRect(0,0,W,H); drawPitch(); renderLines(); renderPlayers(); renderBalls(); }
 
 // ── Input ──
 function getPos(e) {
@@ -338,6 +365,12 @@ function hitPlayer(x, y) {
   for (let i = players.length-1; i >= 0; i--) {
     const p = players[i], dx = p.x-x, dy = p.y-y;
     if (dx*dx + dy*dy <= (PR+8)*(PR+8)) return i;
+  } return -1;
+}
+function hitBall(x, y) {
+  for (let i = balls.length-1; i >= 0; i--) {
+    const b = balls[i], dx = b.x-x, dy = b.y-y;
+    if (dx*dx + dy*dy <= (BR+8)*(BR+8)) return i;
   } return -1;
 }
 function distSeg(p, a, b) {
@@ -355,10 +388,14 @@ canvas.addEventListener('pointerdown', e => {
   e.preventDefault(); const pos = getPos(e);
   if (tool==='move') {
     const i = hitPlayer(pos.x,pos.y);
-    if (i>=0) { drag={idx:i}; canvas.setPointerCapture(e.pointerId); }
+    if (i>=0) { drag={type:'player',idx:i}; canvas.setPointerCapture(e.pointerId); return; }
+    const bi = hitBall(pos.x,pos.y);
+    if (bi>=0) { drag={type:'ball',idx:bi}; canvas.setPointerCapture(e.pointerId); return; }
   } else if (tool==='erase') {
     const i = hitPlayer(pos.x,pos.y);
     if (i>=0) { players.splice(i,1); render(); return; }
+    const bi = hitBall(pos.x,pos.y);
+    if (bi>=0) { balls.splice(bi,1); render(); return; }
     for (let li=drawnLines.length-1; li>=0; li--) {
       const ln=drawnLines[li];
       for (let j=0; j<ln.points.length-1; j++) {
@@ -373,8 +410,11 @@ canvas.addEventListener('pointerdown', e => {
 
 canvas.addEventListener('pointermove', e => {
   e.preventDefault(); const pos = getPos(e);
-  if (drag) { players[drag.idx].x=pos.x; players[drag.idx].y=pos.y; render(); }
-  else if (drawPath) {
+  if (drag) {
+    if (drag.type==='player') { players[drag.idx].x=pos.x; players[drag.idx].y=pos.y; }
+    else { balls[drag.idx].x=pos.x; balls[drag.idx].y=pos.y; }
+    render();
+  } else if (drawPath) {
     const last=drawPath.points[drawPath.points.length-1], dx=pos.x-last.x, dy=pos.y-last.y;
     if (dx*dx+dy*dy > 6) {
       drawPath.points.push(pos); render();
@@ -484,12 +524,49 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
 function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); pendingPos=null; }
 
 document.getElementById('btn-clear').addEventListener('click', () => {
-  if (confirm('Rensa alla spelare och ritningar?')) { players=[]; drawnLines=[]; render(); }
+  if (confirm('Rensa alla spelare och ritningar?')) { players=[]; balls=[]; drawnLines=[]; render(); }
+});
+
+// ── Ball modal ──
+const BALLCOLS = ['#ffffff','#f87171','#fb923c','#facc15','#4ade80','#60a5fa','#c084fc','#ec4899'];
+let chosenBallColor = '#ffffff';
+
+function buildBallColors() {
+  const row = document.getElementById('ball-color-row');
+  row.innerHTML = '';
+  chosenBallColor = '#ffffff';
+  BALLCOLS.forEach((c,i) => {
+    const s = document.createElement('div');
+    s.className = 'pswatch' + (i===0?' active':'');
+    s.style.background = c;
+    if (c==='#ffffff') s.style.border = '2px solid #666';
+    s.addEventListener('click', () => {
+      document.querySelectorAll('#ball-color-row .pswatch').forEach(x=>x.classList.remove('active'));
+      s.classList.add('active'); chosenBallColor = c;
+    });
+    row.appendChild(s);
+  });
+}
+
+document.getElementById('btn-add-ball').addEventListener('click', () => {
+  buildBallColors();
+  document.getElementById('ball-modal-overlay').classList.add('show');
+});
+
+document.getElementById('ball-modal-confirm').addEventListener('click', () => {
+  balls.push({ id: Date.now()+Math.random(), x: W*0.5 + (Math.random()-.5)*40, y: H*0.5 + (Math.random()-.5)*40, color: chosenBallColor });
+  render();
+  document.getElementById('ball-modal-overlay').classList.remove('show');
+});
+document.getElementById('ball-modal-cancel').addEventListener('click', () => {
+  document.getElementById('ball-modal-overlay').classList.remove('show');
+});
+document.getElementById('ball-modal-overlay').addEventListener('click', e => {
+  if (e.target===document.getElementById('ball-modal-overlay')) document.getElementById('ball-modal-overlay').classList.remove('show');
 });
 
 window.addEventListener('resize', resize);
 resize();
 </script>
-
 </body>
 </html>
