@@ -16,41 +16,74 @@
     display: flex; flex-direction: column;
     height: 100dvh; overflow: hidden; user-select: none; -webkit-user-select: none;
   }
+
+  /* ── TOP BAR: two rows ── */
   #topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 7px 10px; background: var(--ui-surface);
-    border-bottom: 1px solid var(--ui-border); flex-shrink: 0; gap: 6px;
+    background: var(--ui-surface);
+    border-bottom: 1px solid var(--ui-border);
+    flex-shrink: 0;
+    padding: 5px 8px 5px;
+    display: flex; flex-direction: column; gap: 5px;
   }
-  #topbar h1 { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #f5d20e; white-space: nowrap; flex-shrink: 0; }
-  .tb-btn { background: var(--ui-border); border: none; color: var(--ui-text); border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  #topbar-row1 {
+    display: flex; align-items: center; gap: 5px;
+  }
+  #topbar h1 {
+    font-size: 12px; font-weight: 800; letter-spacing: .05em;
+    text-transform: uppercase; color: #f5d20e;
+    white-space: nowrap; flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  #topbar-row2 {
+    display: flex; gap: 5px; align-items: center;
+  }
+  .tb-btn {
+    background: var(--ui-border); border: none; color: var(--ui-text);
+    border-radius: 6px; padding: 5px 8px; font-size: 11px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; flex: 1;
+  }
   .tb-btn.danger { background: #7f1d1d; color: #fca5a5; }
+  .tb-btn.sm { flex: none; padding: 5px 7px; }
+
   #canvas-wrap { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0d1117; min-height: 0; }
   #pitch-canvas { display: block; touch-action: none; -webkit-touch-callout: none; }
+
+  /* ── BOTTOM TOOLBAR ── */
   #toolbar { background: var(--ui-surface); border-top: 1px solid var(--ui-border); flex-shrink: 0; }
   #tab-nav { display: flex; border-bottom: 1px solid var(--ui-border); }
-  .tab-btn { flex: 1; padding: 7px 4px; background: none; border: none; color: var(--ui-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; cursor: pointer; border-bottom: 2px solid transparent; }
+  .tab-btn { flex: 1; padding: 6px 4px; background: none; border: none; color: var(--ui-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; cursor: pointer; border-bottom: 2px solid transparent; }
   .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-panel { display: none; padding: 7px 10px 9px; }
-  .tab-panel.active { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
-  .tool-row { display: flex; align-items: center; gap: 5px; width: 100%; flex-wrap: wrap; }
-  .tool-label { font-size: 11px; color: var(--ui-muted); min-width: 54px; flex-shrink: 0; }
-  .tool-btn { background: var(--ui-border); border: 2px solid transparent; color: var(--ui-text); border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .tab-panel { display: none; padding: 6px 8px 8px; }
+  .tab-panel.active { display: flex; flex-direction: column; gap: 5px; }
+
+  /* Each row in the panel */
+  .tool-row { display: flex; align-items: center; gap: 4px; }
+  .tool-label { font-size: 10px; color: var(--ui-muted); width: 46px; flex-shrink: 0; }
+
+  .tool-btn {
+    background: var(--ui-border); border: 2px solid transparent; color: var(--ui-text);
+    border-radius: 5px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+    flex: 1; text-align: center;
+  }
   .tool-btn.active { border-color: var(--accent); background: #1e3a5f; color: #93c5fd; }
   .tool-btn.danger { background: #7f1d1d; color: #fca5a5; }
   .tool-btn.danger.active { border-color: #ef4444; background: #991b1b; }
-  .color-row { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
-  .swatch { width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; flex-shrink: 0; transition: transform .1s, border-color .15s; }
-  .swatch.active { border-color: #fff; transform: scale(1.2); }
-  .color-pick-wrap { position: relative; width: 24px; height: 24px; flex-shrink: 0; }
+
+  .color-row { display: flex; gap: 5px; align-items: center; flex-wrap: nowrap; overflow: hidden; }
+  .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; flex-shrink: 0; transition: transform .1s, border-color .15s; }
+  .swatch.active { border-color: #fff; transform: scale(1.15); }
+
+  .color-pick-wrap { position: relative; width: 22px; height: 22px; flex-shrink: 0; }
   .color-pick-wrap input[type=color] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; border-radius: 50%; }
-  .color-pick-swatch { width: 24px; height: 24px; border-radius: 50%; border: 2px dashed #9ca3af; pointer-events: none; background: conic-gradient(red,yellow,lime,cyan,blue,magenta,red); }
-  .width-btn { background: var(--ui-border); border: 2px solid transparent; border-radius: 6px; width: 32px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .color-pick-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px dashed #9ca3af; pointer-events: none; background: conic-gradient(red,yellow,lime,cyan,blue,magenta,red); }
+
+  .width-btn { background: var(--ui-border); border: 2px solid transparent; border-radius: 5px; width: 36px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
   .width-btn.active { border-color: var(--accent); background: #1e3a5f; }
-  .width-btn span { background: #fff; border-radius: 2px; display: block; width: 18px; }
-  #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
-  #modal-overlay.show { display: flex; }
-  #ball-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
-  #ball-modal-overlay.show { display: flex; }
+  .width-btn span { background: #fff; border-radius: 2px; display: block; width: 20px; }
+
+  /* Modals */
+  #modal-overlay, #ball-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
+  #modal-overlay.show, #ball-modal-overlay.show { display: flex; }
   #modal { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: 12px; padding: 20px; width: min(320px,88vw); }
   #modal h3 { font-size: 13px; margin-bottom: 10px; color: var(--ui-muted); text-transform: uppercase; letter-spacing: .05em; }
   #modal input { width: 100%; background: var(--ui-bg); border: 1px solid var(--ui-border); border-radius: 6px; color: var(--ui-text); font-size: 16px; padding: 10px; margin-bottom: 12px; outline: none; }
@@ -59,7 +92,7 @@
   .modal-btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
   .modal-btn.confirm { background: var(--accent); color: #fff; }
   .modal-btn.cancel { background: var(--ui-border); color: var(--ui-text); }
-  #player-color-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  #player-color-row, #ball-color-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
   .pswatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform .1s, border-color .1s; }
   .pswatch.active { border-color: #fff; transform: scale(1.2); }
 </style>
@@ -67,10 +100,15 @@
 <body>
 
 <div id="topbar">
-  <h1>Perssons taktiktavla</h1>
-  <button class="tb-btn" id="btn-add-player">+ Spelare</button>
-  <button class="tb-btn" id="btn-add-ball">+ Boll</button>
-  <button class="tb-btn danger" id="btn-clear">Rensa</button>
+  <div id="topbar-row1">
+    <h1>Perssons taktiktavla</h1>
+    <button class="tb-btn sm" id="btn-undo">↩ Ångra</button>
+    <button class="tb-btn sm danger" id="btn-clear">🗑 Rensa</button>
+  </div>
+  <div id="topbar-row2">
+    <button class="tb-btn" id="btn-add-player">+ Spelare</button>
+    <button class="tb-btn" id="btn-add-ball">+ Boll</button>
+  </div>
 </div>
 
 <div id="canvas-wrap">
@@ -96,10 +134,8 @@
       <div class="width-btn active" data-w="2"><span style="height:2px"></span></div>
       <div class="width-btn" data-w="4"><span style="height:4px"></span></div>
       <div class="width-btn" data-w="7"><span style="height:7px"></span></div>
-    </div>
-    <div class="tool-row">
-      <span class="tool-label">Linjefärg</span>
-      <div class="color-row" id="draw-colors">
+      <span style="flex:1"></span>
+      <div class="color-row" id="draw-colors" style="flex-wrap:nowrap;">
         <div class="swatch active" style="background:#ffffff" data-color="#ffffff"></div>
         <div class="swatch" style="background:#f87171" data-color="#f87171"></div>
         <div class="swatch" style="background:#fb923c" data-color="#fb923c"></div>
@@ -178,114 +214,143 @@ const ctx    = canvas.getContext('2d');
 let pitchColor = '#1a4fa0', lineColor = '#f5d20e';
 let drawColor  = '#ffffff', drawWidth = 2, tool = 'move';
 let players = [], balls = [], drawnLines = [], drag = null, drawPath = null;
-let W, H, S; // canvas px: width, height, scale
+let W, H, S, GOAL_PX; // canvas px: width, pitch height, scale, goal area height
+// Total canvas height = GOAL_PX + H
 
-// ── Real dimensions (metres) ──
-// Half-pitch: 20 m wide × 20 m long
-// ORIENTATION: mållinje (goal) at TOP (y=0), mittlinje at BOTTOM (y=H)
-// Real coord: X 0–20m, Y 0–20m  (Y=0 = mållinje / goal end)
-const RW = 20, RH = 20;
-const GL = 8.5, GR = 11.5; // goal left/right post x (metres)
-const GD = 0.9;             // goal depth drawn (m) – visual frame
-
-function resize() {
-  const wrap = document.getElementById('canvas-wrap');
-  S = Math.min(wrap.clientWidth / RW, wrap.clientHeight / RH) * 0.97;
-  W = RW * S; H = RH * S;
-  canvas.width  = Math.round(W);
-  canvas.height = Math.round(H);
-  canvas.style.width  = Math.round(W) + 'px';
-  canvas.style.height = Math.round(H) + 'px';
+// ── Undo stack ──
+// Each entry is a snapshot: {players, balls, drawnLines}
+let undoStack = [];
+function saveState() {
+  undoStack.push({
+    players:    players.map(p => ({...p})),
+    balls:      balls.map(b => ({...b})),
+    drawnLines: drawnLines.map(l => ({...l, points: l.points.map(p => ({...p}))}))
+  });
+  if (undoStack.length > 40) undoStack.shift();
+}
+function undo() {
+  if (!undoStack.length) return;
+  const s = undoStack.pop();
+  players    = s.players;
+  balls      = s.balls;
+  drawnLines = s.drawnLines;
   render();
 }
 
-// Metres → canvas pixels
-// X: left→right unchanged
-// Y: mållinje=0 → top of canvas (y=0); mittlinje=20 → bottom (y=H)
+// ── Real dimensions (metres) ──
+// Half-pitch: 20 m wide × 20 m long
+// ORIENTATION: mållinje (goal) at TOP of pitch area, mittlinje at BOTTOM
+// Goal is drawn ABOVE the pitch in a separate strip
+const RW = 20, RH = 20;
+const GL = 8.5, GR = 11.5; // goal post x positions (metres from left sideline)
+const GOAL_DEPTH_M = 1.0;   // goal depth in metres (drawn above mållinje)
+
+function resize() {
+  const wrap = document.getElementById('canvas-wrap');
+  const aw = wrap.clientWidth, ah = wrap.clientHeight;
+  // Reserve ~10% of height for goal area above pitch
+  const goalFrac = 0.10;
+  // Scale so pitch (RW × RH) fits in remaining space
+  S = Math.min(aw / RW, (ah * (1 - goalFrac)) / RH) * 0.97;
+  W = RW * S;
+  H = RH * S;
+  GOAL_PX = GOAL_DEPTH_M * S + 4; // goal strip height in px (goal depth + small margin)
+  const totalH = Math.round(H + GOAL_PX);
+  canvas.width  = Math.round(W);
+  canvas.height = totalH;
+  canvas.style.width  = Math.round(W) + 'px';
+  canvas.style.height = totalH + 'px';
+  render();
+}
+
+// Convert real metres → canvas px (within the PITCH area, which starts at y=GOAL_PX)
 const m2x = m => m * S;
-const m2y = m => m * S;  // Y: 0=top(goal), 20=bottom(midline)
+const m2y = m => GOAL_PX + m * S;  // pitch Y: 0=mållinje (top of pitch), 20=mittlinje
 
 // ── Draw pitch ──
 function drawPitch() {
-  ctx.fillStyle = pitchColor;
-  ctx.fillRect(0, 0, W, H);
+  // Clear entire canvas (pitch + goal area)
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const lw  = Math.max(1,   S * 0.05);  // normal lines 5 cm
-  const lw8 = Math.max(1.5, S * 0.08);  // mållinje between posts 8 cm
+  // Goal area background (dark strip above pitch)
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, canvas.width, GOAL_PX);
+
+  // Pitch background
+  ctx.fillStyle = pitchColor;
+  ctx.fillRect(0, GOAL_PX, W, H);
+
+  const lw  = Math.max(1,   S * 0.05);
+  const lw8 = Math.max(1.5, S * 0.08);
   ctx.strokeStyle = lineColor;
   ctx.lineCap = 'round'; ctx.lineJoin = 'round';
 
-  // ─ Outer border (sides + top mållinje + bottom mittlinje) ─
+  // ─ Outer pitch border ─
   ctx.lineWidth = lw;
-  ctx.strokeRect(0, 0, W, H);
+  ctx.strokeRect(0, GOAL_PX, W, H);
 
-  // ─ Avkastcirkel: ⌀4 m = r 2 m, centred at midpoint of mittlinje ─
-  // Mittlinje = y=20m → bottom of canvas y=H. Centre x=10m.
-  // Draw full circle (top half will be clipped off by canvas edge — that's fine,
-  // but the bottom half is visible inside the pitch)
+  // ─ Avkastcirkel: r=2m centred at bottom midpoint ─
   ctx.beginPath();
   ctx.arc(m2x(10), m2y(20), m2x(2), 0, Math.PI * 2);
   ctx.stroke();
 
-  // ─ Mållinje between posts (thicker: 8 cm) ─
+  // ─ Mållinje between posts (8 cm) ─
   ctx.lineWidth = lw8;
   ctx.beginPath();
-  ctx.moveTo(m2x(GL), 0);
-  ctx.lineTo(m2x(GR), 0);
+  ctx.moveTo(m2x(GL), m2y(0));
+  ctx.lineTo(m2x(GR), m2y(0));
   ctx.stroke();
   ctx.lineWidth = lw;
 
-  // ─ Goal frame (top view: U-shape into pitch) ─
-  ctx.lineWidth = Math.max(2, S * 0.07);
+  // ─ Goal frame: drawn ABOVE mållinje (outside pitch) ─
+  // Posts go from y=GOAL_PX (mållinje) upward to y=0 (top of goal strip)
+  // Back of goal at y = GOAL_PX - GOAL_DEPTH_M*S
+  const goalTopY = GOAL_PX - GOAL_DEPTH_M * S;
+  const goalLineW = Math.max(2, S * 0.08);
+  ctx.lineWidth = goalLineW;
+  ctx.strokeStyle = lineColor;
   ctx.beginPath();
-  ctx.moveTo(m2x(GL), 0);
-  ctx.lineTo(m2x(GL), m2y(GD));   // left post going down (into pitch)
-  ctx.lineTo(m2x(GR), m2y(GD));   // back of goal
-  ctx.lineTo(m2x(GR), 0);         // right post back to mållinje
+  ctx.moveTo(m2x(GL), m2y(0));      // left post base (on mållinje)
+  ctx.lineTo(m2x(GL), goalTopY);    // left post top
+  ctx.lineTo(m2x(GR), goalTopY);    // crossbar (back of goal)
+  ctx.lineTo(m2x(GR), m2y(0));      // right post top → base
   ctx.stroke();
   ctx.lineWidth = lw;
+  ctx.strokeStyle = lineColor;
 
-  // ─ 4-meterslinje: 15 cm wide, centred, at y=4m ─
+  // ─ 4-meterslinje ─
   const cx = m2x(10);
   ctx.beginPath();
   ctx.moveTo(cx - m2x(0.075), m2y(4));
   ctx.lineTo(cx + m2x(0.075), m2y(4));
   ctx.stroke();
 
-  // ─ 7-meterslinje: 1 m wide, centred, at y=7m ─
+  // ─ 7-meterslinje ─
   ctx.beginPath();
   ctx.moveTo(cx - m2x(0.5), m2y(7));
   ctx.lineTo(cx + m2x(0.5), m2y(7));
   ctx.stroke();
 
   // ─ Målgårdslinje 6 m ─
-  // Arc geometry (canvas Y increases downward = into pitch from mållinje at y=0):
-  // Left arc:  centre (GL, 0), r=6m, from angle π (points left → x=GL-6=2.5, y=0)
-  //            to angle π/2 (points down → x=GL, y=6). CCW in canvas = anticlockwise:true.
-  // Straight:  from (GL, 6) to (GR, 6)  [3 m segment]
-  // Right arc: centre (GR, 0), r=6m, from angle π/2 (x=GR, y=6)
-  //            to angle 0 (x=GR+6=17.5, y=0). CCW = anticlockwise:true.
   ctx.beginPath();
-  ctx.arc(m2x(GL), 0, m2x(6), Math.PI, Math.PI/2, true);
+  ctx.arc(m2x(GL), m2y(0), m2x(6), Math.PI, Math.PI/2, true);
   ctx.lineTo(m2x(GR), m2y(6));
-  ctx.arc(m2x(GR), 0, m2x(6), Math.PI/2, 0, true);
+  ctx.arc(m2x(GR), m2y(0), m2x(6), Math.PI/2, 0, true);
   ctx.stroke();
 
   // ─ Frikastlinje 9 m (streckad) ─
   const d = m2x(0.15);
   ctx.setLineDash([d, d]);
   ctx.beginPath();
-  ctx.arc(m2x(GL), 0, m2x(9), Math.PI, Math.PI/2, true);
+  ctx.arc(m2x(GL), m2y(0), m2x(9), Math.PI, Math.PI/2, true);
   ctx.lineTo(m2x(GR), m2y(9));
-  ctx.arc(m2x(GR), 0, m2x(9), Math.PI/2, 0, true);
+  ctx.arc(m2x(GR), m2y(0), m2x(9), Math.PI/2, 0, true);
   ctx.stroke();
   ctx.setLineDash([]);
 
   // ─ Avbytarlinjemarkering ─
-  // Ticks at 4.5 m and 5.0 m from mittlinje → at y = 20-4.5=15.5m and 20-5.0=15m from mållinje
   const tick = m2x(0.15);
   const ay1  = m2y(15.5), ay2 = m2y(15.0);
-  ctx.lineWidth = lw;
   ctx.beginPath();
   ctx.moveTo(0, ay1); ctx.lineTo(tick, ay1);
   ctx.moveTo(0, ay2); ctx.lineTo(tick, ay2);
@@ -353,7 +418,7 @@ function renderBalls() {
   });
 }
 
-function render() { ctx.clearRect(0,0,W,H); drawPitch(); renderLines(); renderPlayers(); renderBalls(); }
+function render() { drawPitch(); renderLines(); renderPlayers(); renderBalls(); }
 
 // ── Input ──
 function getPos(e) {
@@ -388,18 +453,18 @@ canvas.addEventListener('pointerdown', e => {
   e.preventDefault(); const pos = getPos(e);
   if (tool==='move') {
     const i = hitPlayer(pos.x,pos.y);
-    if (i>=0) { drag={type:'player',idx:i}; canvas.setPointerCapture(e.pointerId); return; }
+    if (i>=0) { saveState(); drag={type:'player',idx:i}; canvas.setPointerCapture(e.pointerId); return; }
     const bi = hitBall(pos.x,pos.y);
-    if (bi>=0) { drag={type:'ball',idx:bi}; canvas.setPointerCapture(e.pointerId); return; }
+    if (bi>=0) { saveState(); drag={type:'ball',idx:bi}; canvas.setPointerCapture(e.pointerId); return; }
   } else if (tool==='erase') {
     const i = hitPlayer(pos.x,pos.y);
-    if (i>=0) { players.splice(i,1); render(); return; }
+    if (i>=0) { saveState(); players.splice(i,1); render(); return; }
     const bi = hitBall(pos.x,pos.y);
-    if (bi>=0) { balls.splice(bi,1); render(); return; }
+    if (bi>=0) { saveState(); balls.splice(bi,1); render(); return; }
     for (let li=drawnLines.length-1; li>=0; li--) {
       const ln=drawnLines[li];
       for (let j=0; j<ln.points.length-1; j++) {
-        if (distSeg(pos,ln.points[j],ln.points[j+1]) < 14) { drawnLines.splice(li,1); render(); return; }
+        if (distSeg(pos,ln.points[j],ln.points[j+1]) < 14) { saveState(); drawnLines.splice(li,1); render(); return; }
       }
     }
   } else {
@@ -431,7 +496,10 @@ canvas.addEventListener('pointermove', e => {
 canvas.addEventListener('pointerup', e => {
   e.preventDefault();
   if (drag) { drag=null; render(); }
-  if (drawPath) { if (drawPath.points.length>1) drawnLines.push(drawPath); drawPath=null; render(); }
+  if (drawPath) {
+    if (drawPath.points.length>1) { saveState(); drawnLines.push(drawPath); }
+    drawPath=null; render();
+  }
 });
 
 // ── UI wiring ──
@@ -494,9 +562,11 @@ function buildPColors() {
   });
 }
 
+document.getElementById('btn-undo').addEventListener('click', undo);
+
 let pendingPos = null;
 document.getElementById('btn-add-player').addEventListener('click', () => {
-  pendingPos = { x: W*0.5, y: H*0.55 };
+  pendingPos = { x: W*0.5, y: GOAL_PX + H*0.55 };
   buildPColors();
   document.getElementById('player-name-input').value = '';
   document.getElementById('modal-overlay').classList.add('show');
@@ -506,6 +576,7 @@ document.getElementById('btn-add-player').addEventListener('click', () => {
 function confirmPlayer() {
   const name = document.getElementById('player-name-input').value.trim();
   if (pendingPos) {
+    saveState();
     players.push({ id: Date.now()+Math.random(), x: pendingPos.x+(Math.random()-.5)*50, y: pendingPos.y+(Math.random()-.5)*50, name, color: chosenColor });
     render();
   }
@@ -554,7 +625,8 @@ document.getElementById('btn-add-ball').addEventListener('click', () => {
 });
 
 document.getElementById('ball-modal-confirm').addEventListener('click', () => {
-  balls.push({ id: Date.now()+Math.random(), x: W*0.5 + (Math.random()-.5)*40, y: H*0.5 + (Math.random()-.5)*40, color: chosenBallColor });
+  saveState();
+  balls.push({ id: Date.now()+Math.random(), x: W*0.5 + (Math.random()-.5)*40, y: GOAL_PX + H*0.5 + (Math.random()-.5)*40, color: chosenBallColor });
   render();
   document.getElementById('ball-modal-overlay').classList.remove('show');
 });
