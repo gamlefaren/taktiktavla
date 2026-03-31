@@ -3,7 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Taktiktavla</title>
+<title>Perssons Taktiktavla</title>
+
+<!-- iOS hemskärm -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Taktiktavla">
+<link rel="apple-touch-icon" href="icon.png">
+
+<!-- Fallback: inbäddad ikon via JS om icon.png saknas -->
+<script>
+(function(){
+  const b64='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';
+  const link = document.createElement('link');
+  link.rel = 'apple-touch-icon';
+  link.href = 'data:image/png;base64,' + b64;
+  document.head.appendChild(link);
+})();
+</script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
   :root {
@@ -45,8 +62,24 @@
   .tb-btn.danger { background: #7f1d1d; color: #fca5a5; }
   .tb-btn.sm { flex: none; padding: 5px 7px; }
 
-  #canvas-wrap { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0d1117; min-height: 0; }
-  #pitch-canvas { display: block; touch-action: none; -webkit-touch-callout: none; }
+  #canvas-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #0d1117;
+    min-height: 0;
+    position: relative;
+  }
+  #pitch-canvas {
+    display: block;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    /* Always fill full available height; width follows naturally */
+    height: 100%;
+    width: auto;
+  }
 
   /* ── BOTTOM TOOLBAR ── */
   #toolbar { background: var(--ui-surface); border-top: 1px solid var(--ui-border); flex-shrink: 0; }
@@ -248,18 +281,26 @@ const GOAL_DEPTH_M = 1.0;   // goal depth in metres (drawn above mållinje)
 function resize() {
   const wrap = document.getElementById('canvas-wrap');
   const aw = wrap.clientWidth, ah = wrap.clientHeight;
-  // Reserve ~10% of height for goal area above pitch
-  const goalFrac = 0.10;
-  // Scale so pitch (RW × RH) fits in remaining space
-  S = Math.min(aw / RW, (ah * (1 - goalFrac)) / RH) * 0.97;
-  W = RW * S;
-  H = RH * S;
-  GOAL_PX = GOAL_DEPTH_M * S + 4; // goal strip height in px (goal depth + small margin)
-  const totalH = Math.round(H + GOAL_PX);
-  canvas.width  = Math.round(W);
+
+  // Scale so pitch (RW × RH) fits the available space
+  S = Math.min(aw / RW, ah / RH);
+
+  W = Math.round(RW * S);
+  H = Math.round(RH * S);  // actual pitch height in px
+
+  // Goal strip above pitch
+  GOAL_PX = Math.round(GOAL_DEPTH_M * S);
+
+  // Total canvas height = goal strip + pitch
+  const totalH = H + GOAL_PX;
+
+  canvas.width  = W;
   canvas.height = totalH;
-  canvas.style.width  = Math.round(W) + 'px';
+  canvas.style.width  = W + 'px';
   canvas.style.height = totalH + 'px';
+  canvas.style.marginTop    = '';
+  canvas.style.marginBottom = '';
+
   render();
 }
 
@@ -269,14 +310,11 @@ const m2y = m => GOAL_PX + m * S;  // pitch Y: 0=mållinje (top of pitch), 20=mi
 
 // ── Draw pitch ──
 function drawPitch() {
-  // Clear entire canvas (pitch + goal area)
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Goal area background (dark strip above pitch)
+  // Pitch background (pitch area only, not goal strip)
   ctx.fillStyle = '#0d1117';
-  ctx.fillRect(0, 0, canvas.width, GOAL_PX);
-
-  // Pitch background
+  ctx.fillRect(0, 0, W, canvas.height);
   ctx.fillStyle = pitchColor;
   ctx.fillRect(0, GOAL_PX, W, H);
 
@@ -301,22 +339,6 @@ function drawPitch() {
   ctx.lineTo(m2x(GR), m2y(0));
   ctx.stroke();
   ctx.lineWidth = lw;
-
-  // ─ Goal frame: drawn ABOVE mållinje (outside pitch) ─
-  // Posts go from y=GOAL_PX (mållinje) upward to y=0 (top of goal strip)
-  // Back of goal at y = GOAL_PX - GOAL_DEPTH_M*S
-  const goalTopY = GOAL_PX - GOAL_DEPTH_M * S;
-  const goalLineW = Math.max(2, S * 0.08);
-  ctx.lineWidth = goalLineW;
-  ctx.strokeStyle = lineColor;
-  ctx.beginPath();
-  ctx.moveTo(m2x(GL), m2y(0));      // left post base (on mållinje)
-  ctx.lineTo(m2x(GL), goalTopY);    // left post top
-  ctx.lineTo(m2x(GR), goalTopY);    // crossbar (back of goal)
-  ctx.lineTo(m2x(GR), m2y(0));      // right post top → base
-  ctx.stroke();
-  ctx.lineWidth = lw;
-  ctx.strokeStyle = lineColor;
 
   // ─ 4-meterslinje ─
   const cx = m2x(10);
